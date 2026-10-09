@@ -1,0 +1,4 @@
+attention:
+  name: se
+  enabled: false
+  reduction_ratio: 16

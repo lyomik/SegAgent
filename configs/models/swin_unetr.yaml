@@ -1,0 +1,7 @@
+model:
+  name: swin_unetr
+  adapter: segagent.models.swin_unetr.adapter
+  spatial_dims: 3
+  patch_size: null
+  batch_size: null
+  mixed_precision: true

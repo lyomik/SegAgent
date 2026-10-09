@@ -1,0 +1,5 @@
+attention:
+  name: cbam
+  enabled: false
+  reduction_ratio: 16
+  spatial_kernel_size: 7

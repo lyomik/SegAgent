@@ -1,0 +1,21 @@
+dataset:
+  name: LIDC-IDRI
+  modality: CT
+  raw_dir: data/raw/LIDC-IDRI
+  canonical_dir: data/canonical
+  processed_dir: data/processed
+
+construction:
+  series_selection: null  # TODO: freeze the deterministic CT-series selection rule.
+  annotation_consensus: null  # TODO: freeze the multi-reader mask aggregation rule.
+  split_file: data/canonical/splits/patient_split.json
+  split_seed: 42
+
+preprocessing:
+  orientation: RAS
+  target_spacing: null  # TODO: determine once, then share across every model.
+  image_interpolation: linear
+  label_interpolation: nearest
+  hu_clip: null  # TODO: use [min, max] after the Stage 1 policy is approved.
+  normalization: null  # TODO: record method and any fitted statistics.
+  crop_policy: null  # TODO: must not use test-time ground truth localization.

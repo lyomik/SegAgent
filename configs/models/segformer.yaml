@@ -1,0 +1,7 @@
+model:
+  name: segformer
+  adapter: segagent.models.segformer.adapter
+  spatial_dims: 2
+  patch_size: null
+  batch_size: null
+  mixed_precision: true

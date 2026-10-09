@@ -1,0 +1,7 @@
+model:
+  name: pvformer
+  adapter: segagent.models.pvformer.adapter
+  spatial_dims: 3
+  patch_size: null
+  batch_size: null
+  mixed_precision: true

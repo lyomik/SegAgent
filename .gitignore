@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# Local environment and IDE files
+.env
+.env.*
+.idea/
+.vscode/
+
+# Datasets and generated experiment artifacts
+/data/
+/experiments/
+/checkpoints/
+
+# Locally installed tools
+/tools/
+
+# Common model and array artifacts
+*.ckpt
+*.pth
+*.pt
+*.npz
+*.npy
+
+# Notebook transient files
+.ipynb_checkpoints/
