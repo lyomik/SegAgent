@@ -1,26 +1,27 @@
 # SegAgent
 
-SegAgent is a reproducible research project for lung-nodule segmentation on
-LIDC-IDRI. It separates shared dataset construction and preprocessing from
-model-specific adapters so that all benchmarked models receive equivalent
-inputs and ground truth.
+SegAgent 是一個以 LIDC-IDRI 進行肺結節分割的可重現研究專案。專案將共用的
+資料集建構與前處理流程，和各模型專屬的轉接器分離，確保所有受評模型都使用
+等價的輸入與真實標註。
 
-## Project layout
+## 專案結構
 
-- `configs/`: dataset, model, attention, and stage-specific experiment settings.
-- `data/`: raw, canonical, and processed datasets (excluded from Git).
-- `src/segagent/`: reusable data, model, training, evaluation, ensemble, and agent code.
-- `scripts/`: command-line entry points and stage orchestration.
-- `experiments/`: run outputs (excluded from Git).
-- `checkpoints/`: model weights (excluded from Git).
-- `notebooks/`: exploratory analysis and visualization.
-- `docs/`: specifications, plans, and thesis notes.
-- `system/`: the later SegAgent application layer.
+- `configs/`：資料集、模型、注意力模組與各階段實驗設定。
+- `data/`：原始、標準化與處理後的資料集（不納入 Git）。
+- `src/segagent/`：可重用的資料、模型、訓練、評估、融合與代理程式碼。
+- `scripts/`：命令列入口與各階段流程控制程式。
+- `experiments/`：實驗執行輸出（不納入 Git）。
+- `checkpoints/`：模型權重（不納入 Git）。
+- `notebooks/`：探索性分析與視覺化筆記本。
+- `docs/`：規格、計畫與論文筆記。
+- `system/`：後續的 SegAgent 應用層。
 
-The preprocessing contract is documented in
-[`docs/Stage1/Preprocess_Spec.md`](docs/Stage1/Preprocess_Spec.md).
+前處理契約記錄於
+[`docs/Stage1/Preprocess_Spec.md`](docs/Stage1/Preprocess_Spec.md)。
+基準模型註冊、設定歸屬與檢查點目錄結構記錄於
+[`docs/model_management.md`](docs/model_management.md)。
 
-## Setup
+## 環境設定
 
 ```bash
 python -m venv .venv
@@ -28,7 +29,7 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-The current LIDC-IDRI downloader can be resumed with:
+可使用下列命令續傳 LIDC-IDRI：
 
 ```bash
 python scripts/download_lidc_idri.py \

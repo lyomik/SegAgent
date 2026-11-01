@@ -1,55 +1,72 @@
-# Week 01 TODO｜10/09～10/15
+# 第 01 週待辦｜10/09～10/15
 
-**階段：** 共用 Pipeline 與 Stage 1 啟動  
-**週目標：** 固定公平比較規格，讓五個 baseline 全部通過 smoke test 並開始正式訓練。  
-**輸入：** LIDC-IDRI 原始 CT、結節標註、五個候選模型實作  
-**完成狀態：** ⬜ 未開始
+**階段：** 共用流程與第一階段啟動<br>
+**週目標：** 固定公平比較規格，讓五個基準模型全部通過冒煙測試並開始正式訓練。<br>
+**輸入：** LIDC-IDRI 原始 CT、結節標註、五個候選模型實作<br>
+**完成狀態：** 🟨 進行中
 
 ## 1. 資料與切分
 
 - [x] 確定使用 LIDC-IDRI，任務為肺結節分割。
-- [ ] 確認資料下載完整性、版本與原始檔案清單。
+- [x] 確認資料下載完整性、版本與原始檔案清單。
 - [ ] 盤點影像數量、標註數量、類別比例與缺失資料。
-- [ ] 固定結節納入／排除條件，以及多位放射科醫師標註的整合規則。
-- [ ] 以病人為單位建立 training／validation／test split。
-- [ ] 固定 split 檔案並記錄 random seed。
-- [ ] 檢查同一病人的資料未跨 split。
-- [ ] 抽查影像方向、spacing、尺寸、label mapping 與空標註。
-- [ ] 記錄資料排除條件及最終納入數量。
+- [x] 固定結節納入／排除條件，以及多位放射科醫師標註的整合規則。
+- [x] 以病人為單位建立訓練／驗證／測試切分。
+- [x] 固定切分檔案並記錄隨機種子。
+- [x] 檢查同一病人的資料未跨越不同切分。
+- [x] 抽查影像方向、體素間距、尺寸、標籤映射與空標註。
+- [x] 記錄資料排除條件及最終納入數量。
 
-## 2. 共用訓練與評估 Pipeline
+## 2. 共用訓練與評估流程
 
-- [ ] 固定前處理、normalization、resampling 與 crop／patch 規則。
-- [ ] 固定資料增強、loss、optimizer、learning rate 與 epoch。
-- [ ] 實作 Dice、Sensitivity、HD95、Precision、Specificity。
-- [ ] 為空預測與空標註案例定義一致的 metric 處理方式。
-- [ ] 統一 config、checkpoint、log、prediction 與 metrics 目錄結構。
-- [ ] 在輸出中保存模型名稱、seed、資料版本與完整設定。
+- [x] 固定前處理、正規化、重新取樣與裁切／區塊規則。
+- [x] 固定資料增強、損失函數、最佳化器、學習率與訓練輪數。
+- [x] 實作 Dice、Sensitivity、HD95、Precision、Specificity。
+- [x] 為空預測與空標註案例定義一致的指標處理方式。
+- [x] 統一設定檔、檢查點、日誌、預測結果與評估指標的目錄結構。
+- [x] 在輸出中保存模型名稱、隨機種子、資料版本與完整設定。
 
-## 3. Baseline 啟動
+## 3. 基準模型啟動
 
-- [ ] 為 nnU-Net v2 建立設定並完成 smoke test。
-- [ ] 為 MedNeXt 建立設定並完成 smoke test。
-- [ ] 為 SegFormer 建立設定並完成 smoke test。
-- [ ] 為 Swin-UNETR 建立設定並完成 smoke test。
-- [ ] 為 PVFormer 建立設定並完成 smoke test。
-- [ ] 檢查五個模型輸入、輸出尺寸及類別數一致。
-- [ ] 排定正式訓練 queue 並啟動可執行的模型。
+- [x] 為 nnU-Net v2 建立設定。
+- [x] 完成 nnU-Net v2 冒煙測試。
+- [x] 為 MedNeXt 建立設定。
+- [x] 完成 MedNeXt 冒煙測試。
+- [x] 為 SegFormer 建立設定。
+- [x] 完成 SegFormer 冒煙測試。
+- [x] 為 Swin-UNETR 建立設定。
+- [x] 完成 Swin-UNETR 冒煙測試。
+- [x] 為 UNETR 建立設定。
+- [x] 完成 UNETR 冒煙測試。
+- [x] 檢查五個模型輸入、輸出尺寸及類別數一致。
+- [x] 排定正式訓練佇列並啟動可執行的模型。
 
 ## 4. 文件與紀錄
 
-- [ ] 更新 Stage 1 的固定設定與資料切分。
-- [ ] 建立實驗追蹤表及 run ID。
-- [ ] 撰寫論文的 Dataset、Preprocessing 與 Metrics 初稿。
-- [ ] 記錄本週錯誤、修正方式與尚未解決的風險。
+- [x] 更新第一階段的固定設定與資料切分。
+- [x] 建立實驗追蹤表及執行識別碼（`run_id`）。
+- [ ] 撰寫論文的資料集、前處理與評估指標初稿。
+- [x] 記錄本週錯誤、修正方式與尚未解決的風險。
 
 ## 週末驗收
 
-- [ ] 五個模型皆完成 end-to-end smoke test。
-- [ ] 共用評估程式能由預測檔產生結果表。
-- [ ] 正式訓練已啟動，且剩餘時間可在 Week 02 內完成。
-- [ ] 所有設定與 split 皆可重現。
+- [x] 五個模型皆完成端對端冒煙測試。
+- [x] 共用評估程式能由預測檔產生結果表。
+- [ ] 正式訓練已啟動，且剩餘時間可在第 02 週內完成。
+- [ ] 所有設定與資料切分皆可重現。
 
-**本週產物：** split 檔、共用 config、評估程式、五份 smoke-test log、實驗追蹤表。  
+**本週產物：** 資料切分檔、共用設定檔、評估程式、五份冒煙測試日誌、實驗追蹤表。
 **阻塞／備註：**
+
+- 2026-10-18：888 個合格 series 對應 887 位病人；病人切分為 621/133/133，已自動驗證無病人洩漏。
+- 標註聚類有 13 個相鄰結節案例無法直接縮小為每群至多四份標註；已加入「同一 reader 每群最多一份」的受限單連結 fallback 與測試。
+- 已完成一個陽性案例的標準資料建構、前處理及 identity 評估冒煙測試；全量 888 個 series 尚未轉換。
+- 2026-10-19 已擴充為跨 train／validation／test 的 7 例 smoke，涵蓋 4 例陽性與 3 例空標註，所有影像／標籤幾何一致。
+- 2026-10-26：建立 Python 3.12／CUDA 13 訓練環境並通過 runtime strict gate；固定 3D 模型為 `64³` patch、SegFormer 為 `256²`、batch size 為 1，nnU-Net dataset ID 為 501。
+- 五個模型已使用陽性案例 `LIDC-IDRI-0001_8807a8bd` 完成 forward、輸出契約、有限值、loss、backward 與 optimizer step 檢查；結果位於 `experiments/stage1/model_smoke/20261026-model-smoke-v3/`。
+- nnU-Net smoke 使用 nnU-Net v2 相依套件的 compact 3D PlainConvUNet，並驗證外部訓練命令可解析；正式訓練前仍須匯出 Dataset501 並執行 fingerprint／planning。
+- 2026-10-26：MedNeXt development run 已在 GPU 上啟動並持續保存 `best.pt`／`last.pt`；此 run 明確標記為 7 例資料、`formal_dataset_complete: false`，不納入正式模型比較。
+- 完整建構共納入 886 例，另有 2 例因標註引用所選 CT series 以外的 SOP UID 而留下可追蹤排除紀錄；完整前處理正在執行。
+- 前處理完成後，`20261026-stage1-all-baselines-v1` 會依序訓練 MedNeXt、SegFormer、Swin-UNETR、UNETR 與 nnU-Net v2；任一模型失敗不會阻止後續模型，且每個模型都有獨立日誌與 checkpoint。
+- 仍待完成：全量類別比例及正式訓練。
 

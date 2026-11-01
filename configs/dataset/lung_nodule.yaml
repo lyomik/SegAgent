@@ -2,20 +2,73 @@ dataset:
   name: LIDC-IDRI
   modality: CT
   raw_dir: data/raw/LIDC-IDRI
+  raw_dicom_dir: data/raw/LIDC-IDRI/dicom
+  annotation_archive: data/raw/LIDC-IDRI/LIDC-XML-only.zip
   canonical_dir: data/canonical
   processed_dir: data/processed
 
 construction:
-  series_selection: null  # TODO: freeze the deterministic CT-series selection rule.
-  annotation_consensus: null  # TODO: freeze the multi-reader mask aggregation rule.
+  policy_version: v1
+  series_selection:
+    strategy: xml_series_instance_uid
+    require_xml_match: true
+    max_slice_thickness_mm: 2.5
+    require_uniform_slice_spacing: true
+    require_contiguous_slices: true
+    duplicate_annotation_policy: revision_manifest
+  annotation_consensus:
+    lesion_class: nodule_ge_3mm
+    minimum_readers: 3
+    clustering: minimum_boundary_distance_with_reader_constraint
+    voxel_agreement_fraction: 0.5
+    preserve_instance_masks: true
+    semantic_mask_merge: union
+    ignore_non_nodules_and_nodules_lt_3mm: true
   split_file: data/canonical/splits/patient_split.json
   split_seed: 42
+  split:
+    unit: patient
+    ratios:
+      train: 0.70
+      validation: 0.15
+      test: 0.15
+    stratify_by:
+      - has_eligible_nodule
+      - eligible_nodule_count_bin
 
 preprocessing:
   orientation: RAS
-  target_spacing: null  # TODO: determine once, then share across every model.
+  target_spacing_mm: [1.0, 1.0, 1.0]
   image_interpolation: linear
   label_interpolation: nearest
-  hu_clip: null  # TODO: use [min, max] after the Stage 1 policy is approved.
-  normalization: null  # TODO: record method and any fitted statistics.
-  crop_policy: null  # TODO: must not use test-time ground truth localization.
+  hu_clip: [-1000, 400]
+  normalization:
+    method: min_max
+    output_range: [0.0, 1.0]
+    statistics_source: fixed_hu_window
+  crop_policy:
+    training: label_guided_patch_sampling
+    validation_and_test: full_volume_sliding_window
+    use_ground_truth_for_inference_localization: false
+  padding:
+    image_value_hu: -1000
+    label_value: 0
+
+canonical_output:
+  image_format: nifti_gz
+  image_dtype: float32
+  label_dtype: uint8
+  preserve_instance_masks: true
+  save_transform_chain: true
+  save_source_uids: true
+
+quality_control:
+  reference_audit_run: experiments/stage1/data_audit/20261018-data-audit-v1
+  expected_eligible_series: 888
+  expected_eligible_patients: 887
+  reject_duplicate_sop_instance_uid: true
+  reject_missing_or_nonuniform_slices: true
+  reject_invalid_orientation: true
+  reject_missing_rescale_parameters: true
+  require_image_label_geometry_match: true
+  report_file: data/canonical/metadata/quality_control.csv

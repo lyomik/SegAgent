@@ -1,4 +1,5 @@
 attention:
   name: se
-  enabled: false
+  enabled: true
+  insertion: encoder_stage_outputs_before_decode_head
   reduction_ratio: 16

@@ -1,85 +1,130 @@
-# SegAgent —  Preprocessing Specification
+# SegAgent 前處理規格
 
-## 1. 必須統一的項目（Shared Preprocessing）
+## 1. 必須統一的項目（共用前處理）
 
-所有模型必須遵守相同的資料前處理規範，以確保 Stage 1 比較的公平性。
+所有模型必須遵守相同的資料前處理規範，以確保第一階段比較的公平性。
 
 | 項目 | 統一規範 |
 |---|---|
-| Dataset | 使用相同的 LIDC-IDRI 資料 |
-| CT Series Selection | 每個病例使用相同的 CT Series |
-| DICOM Conversion | 統一轉換為 NIfTI，保留正確 HU 與空間資訊 |
-| Ground Truth | 使用相同的結節標註整合方式與 Mask |
-| Data Split | 相同 Patient-level Train / Val / Test |
-| Orientation | 統一為 RAS |
-| Target Spacing | 使用相同的 Voxel Spacing |
-| Resampling | 使用相同的影像及 Mask 插值規則 |
-| HU Clipping | 使用相同的 HU 範圍 |
-| Intensity Normalization | 使用相同的 Normalization 方法與統計量 |
-| Crop / ROI Policy | 使用相同的影像搜尋範圍與裁切規則 |
+| 資料集 | 使用相同的 LIDC-IDRI 資料 |
+| CT 序列選擇 | 每個病例使用相同的 CT 序列 |
+| DICOM 轉換 | 統一轉換為 NIfTI，保留正確 HU 與空間資訊 |
+| 真實標註 | 使用相同的結節標註整合方式與遮罩 |
+| 資料切分 | 使用相同的病人層級訓練／驗證／測試切分 |
+| 影像方向 | 統一為 RAS |
+| 目標間距 | 使用相同的體素間距 |
+| 重新取樣 | 使用相同的影像與遮罩插值規則 |
+| HU 截切 | 使用相同的 HU 範圍 |
+| 強度正規化 | 使用相同的正規化方法與統計量 |
+| 裁切／ROI 政策 | 使用相同的影像搜尋範圍與裁切規則 |
 
-**原則：** 各模型可以使用自己的 Preprocessor 實作，但最終必須符合上述共同規範，避免重複 Resampling 或 Normalization。
+**原則：** 各模型可以使用自己的前處理器實作，但最終必須符合上述共同規範，避免重複重新取樣或正規化。
 
-## 2. 可自行設定的項目（Model-specific Configuration）
+## 2. 可自行設定的項目（模型專屬設定）
 
-以下項目允許模型依自身 Architecture 與 Hardware Requirements 調整。
+以下項目允許模型依自身架構與硬體需求調整。
 
 | 項目 | 自訂範圍 |
 |---|---|
-| Tensor Layout | 2D / 2.5D / 3D，依模型需求 |
-| Patch Size | 優先統一，架構或記憶體限制時可調整 |
-| Batch Size | 依 GPU Memory 調整 |
-| Internal Padding | 依 Network Downsampling 需求 |
-| Network Architecture | 保留模型原生設計 |
-| Positional Embedding | Transformer 模型自行處理 |
-| Gradient Checkpointing | 依記憶體需求使用 |
-| Mixed Precision | FP32 / FP16 / BF16，依模型相容性 |
+| 張量排列 | 2D／2.5D／3D，依模型需求 |
+| 分塊尺寸 | 優先統一，架構或記憶體限制時可調整 |
+| 批次大小 | 依 GPU 記憶體調整 |
+| 內部填補 | 依網路下採樣需求調整 |
+| 網路架構 | 保留模型原生設計 |
+| 位置嵌入 | Transformer 模型自行處理 |
+| 梯度檢查點 | 依記憶體需求使用 |
+| 混合精度 | FP32／FP16／BF16，依模型相容性 |
 
 **限制：**
 
-- Model-specific Adapter 不得自行改變已固定的 HU、Spacing、Normalization 或 Ground Truth。
-- Patch Size 若不同，必須記錄實際 Physical Field of View。
-- 不得在測試階段使用 Ground Truth 定位結節 ROI。
-- 各模型自行設定的項目必須記錄於 Configuration，以確保實驗可重現。
+- 模型專屬轉接器不得自行改變已固定的 HU、間距、正規化或真實標註。
+- 分塊尺寸若不同，必須記錄實際物理視野範圍。
+- 不得在測試階段使用真實標註定位結節 ROI。
+- 各模型自行設定的項目必須記錄於設定檔，以確保實驗可重現。
 
 ## 3. 前處理架構
 
 ```text
-Raw Dataset (DICOM + XML)
+原始資料集（DICOM + XML）
           │
           ▼
-   Data Construction
-   ├── QC / Series Selection
+      資料建構
+   ├── 品質檢查／序列選擇
    ├── DICOM → NIfTI
-   ├── Ground Truth Generation
-   └── Patient-level Split
+   ├── 真實標註產生
+   └── 病人層級切分
           │
           ▼
-    Canonical Dataset
-    (Image / Mask / Split / Metadata)
+      標準資料集
+  （影像／遮罩／切分／中繼資料）
           │
           ▼
-   Shared Preprocessing
-   ├── Orientation
-   ├── Target Spacing
-   ├── Resampling
-   ├── HU Clipping
-   ├── Normalization
-   └── Crop / ROI Policy
+      共用前處理
+   ├── 影像方向
+   ├── 目標間距
+   ├── 重新取樣
+   ├── HU 截切
+   ├── 正規化
+   └── 裁切／ROI 政策
           │
           ▼
-      Model Adapters
+      模型轉接器
    ├── nnU-Net
    ├── MedNeXt
    ├── SegFormer
    ├── Swin-UNETR
-   └── PVFormer
+   └── UNETR
 ```
 
 ## 4. 核心原則
 
-**Shared Preprocessing 決定資料的一致性；Model Adapter 只負責滿足不同架構的輸入與運算需求。**
+**共用前處理決定資料的一致性；模型轉接器只負責滿足不同架構的輸入與運算需求。**
 
-nnU-Net 可以保留自適應的 Network Architecture、Batch Size、Patch Size 等配置，但在 Controlled Benchmark 中，不得覆寫共同定義的 Spacing、Intensity Normalization 與 Crop Policy。
+nnU-Net 可以保留自適應的網路架構、批次大小、分塊尺寸等配置，但在受控基準比較中，不得覆寫共同定義的間距、強度正規化與裁切政策。
 
 所有模型最終接受相同的資料與標註，並遵守一致的前處理規範。
+
+## 5. 第一版資料與標註政策
+
+### 5.1 CT 納入條件
+
+- 以 XML 內的 `SeriesInstanceUID` 對應 DICOM series，不依資料夾順序猜測。
+- 切片厚度不得超過 2.5 mm。
+- DICOM 切片必須可讀、方向一致、空間位置連續，且不得包含重複的 SOP Instance UID。
+- 同一病人的多次 CT 可保留，但必須分配到相同的資料切分，避免資料洩漏。
+- 重複或修正版 XML 必須透過版本清單明確選擇，不可直接合併成額外閱片者。
+
+### 5.2 真實標註
+
+- 目標為直徑至少 3 mm 的結節；小於 3 mm 的結節與非結節標記不納入正類。
+- 同一結節須獲至少三位放射科醫師接受，才納入主要實驗標註。
+- 對同一結節的多個輪廓使用 50% 體素共識建立遮罩。
+- 同時保存實例遮罩與二元語意遮罩；二元遮罩為所有合格結節實例的聯集。
+- 無合格結節的 CT 保留為陰性案例，並在資料切分與評估時分層處理。
+
+### 5.3 共用影像轉換
+
+| 項目 | 第一版設定 |
+|---|---|
+| 方向 | RAS |
+| 目標間距 | 1.0 × 1.0 × 1.0 mm |
+| 影像插值 | 線性插值 |
+| 標籤插值 | 最近鄰插值 |
+| HU 範圍 | -1000～400 HU |
+| 強度縮放 | 固定線性縮放至 0～1 |
+| 影像填補值 | -1000 HU（縮放後為 0） |
+| 標籤填補值 | 0 |
+| 驗證／測試推論 | 完整影像滑動視窗，不使用真實標註定位 |
+
+### 5.4 資料切分
+
+- 切分單位為病人，隨機種子固定為 42。
+- 訓練／驗證／測試比例為 70%／15%／15%。
+- 依是否含合格結節與結節數量區間進行分層。
+- 測試集名單產生後鎖定；任何閾值、模型或後處理選擇只能使用訓練與驗證資料。
+
+## 6. 品質檢查與可追溯性
+
+每個標準案例必須保存來源病人 ID、Study／Series／SOP UID、原始 affine、轉換後 affine、影像尺寸、體素間距、HU 轉換參數、標註版本、排除原因與完整轉換鏈。
+
+資料稽核與前處理試跑分別記錄在 `experiments/stage1/data_audit/<run_id>/` 與 `experiments/stage1/preprocessing/<run_id>/`。正式批次處理前，先以至少一個陽性案例、一個陰性案例、一個多結節案例與一個厚切片排除案例進行冒煙測試。

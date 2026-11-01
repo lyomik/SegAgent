@@ -1,6 +1,9 @@
-# Architecture
+# 系統架構
 
-The repository separates canonical dataset construction, shared preprocessing,
-model adapters, training/evaluation, ensemble logic, and the later SegAgent
-application. Model adapters may change tensor layout and model-specific padding,
-but must not redefine shared preprocessing or ground truth.
+本專案將標準資料集建構、共用前處理、模型轉接器、訓練／評估、融合邏輯，
+以及後續的 SegAgent 應用程式分開管理。模型轉接器可以調整張量排列方式和
+模型專屬的填補方式，但不得重新定義共用前處理或真實標註。
+
+第一階段的模型成員與生命週期定義於
+[`model_management.md`](model_management.md)。基準模型清單是唯一可信來源；
+轉接器會延遲匯入所需後端，因此檢查設定時不必載入所有深度學習框架。

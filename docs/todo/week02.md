@@ -1,53 +1,69 @@
-# Week 02 TODO｜10/16～10/22
+# 第 02 週待辦｜10/16～10/22
 
-**階段：** Stage 1 Baseline 篩選  
-**週目標：** 完成五種 baseline 比較並鎖定 Stage 2 backbone。  
-**輸入：** Week 01 共用 pipeline、五個 baseline runs  
-**完成狀態：** ⬜ 未開始
+**階段：** 第一階段基準模型篩選<br>
+**週目標：** 完成五種基準模型比較，並鎖定第二階段的骨幹模型。<br>
+**輸入：** 第 01 週共用流程、五個基準模型執行結果<br>
+**完成狀態：** 🟨 五模型訓練、統一評估與選模完成；種子複驗及論文更新待辦
 
 ## 1. 訓練完成與品質檢查
 
-- [ ] 完成 nnU-Net v2 正式訓練與 validation inference。
-- [ ] 完成 MedNeXt 正式訓練與 validation inference。
-- [ ] 完成 SegFormer 正式訓練與 validation inference。
-- [ ] 完成 Swin-UNETR 正式訓練與 validation inference。
-- [ ] 完成 PVFormer 正式訓練與 validation inference。
-- [ ] 檢查所有 run 無 NaN、崩潰、資料錯置或 checkpoint 遺失。
-- [ ] 對失敗 run 排錯並補跑一次；保留失敗原因紀錄。
+- [x] 完成 nnU-Net v2 正式訓練與驗證集推論。
+- [x] 完成 MedNeXt 正式訓練與驗證集推論。
+- [x] 完成 SegFormer 正式訓練與驗證集推論。
+- [x] 完成 Swin-UNETR 正式訓練與驗證集推論。
+- [x] 完成 UNETR 正式訓練與驗證集推論。
+- [x] 檢查所有執行皆無 NaN、崩潰、資料錯置或檢查點遺失。
+- [x] 對失敗的執行排錯並補跑一次；保留失敗原因紀錄。
 
 ## 2. 統一評估
 
-- [ ] 產生每個模型的 case-level metrics。
-- [ ] 計算各指標平均值、標準差與中位數。
-- [ ] 核對 Dice、Sensitivity、HD95、Precision、Specificity。
-- [ ] 記錄參數量、最高 GPU 記憶體與單案例推論時間。
-- [ ] 依病灶大小分組檢視表現。
+- [x] 產生每個模型的個案層級評估指標。
+- [x] 計算各指標平均值、標準差與中位數。
+- [x] 核對 Dice、Sensitivity、HD95、Precision、Specificity。
+- [x] 記錄參數量、最高 GPU 記憶體與單案例推論時間。
+- [x] 依病灶大小分組檢視表現。
 - [ ] 各抽查至少三個成功與三個失敗案例。
-- [ ] 確認模型比較皆使用相同 validation cases。
+- [x] 確認模型比較皆使用相同的驗證案例。
 
 ## 3. 選模與封版
 
-- [ ] 以 Dice、Sensitivity 為主要依據建立排名。
-- [ ] 以 HD95、Precision、Specificity處理表現相近情況。
-- [ ] 比較訓練穩定性與資源成本。
-- [ ] 對前二名進行必要的 seed 複驗或結果確認。
-- [ ] 選出 Stage 1 勝出 baseline。
-- [ ] 鎖定 checkpoint、config、preprocessing 與 inference command。
-- [ ] 將未入選模型標記為封存，不再占用 Stage 2 資源。
+- [x] 以 Dice、Sensitivity 為主要依據建立排名。
+- [x] 以 HD95、Precision、Specificity處理表現相近情況。
+- [x] 比較訓練穩定性與資源成本。
+- [ ] 對前二名進行必要的隨機種子複驗或結果確認。
+- [x] 選出第一階段勝出的基準模型。
+- [x] 鎖定檢查點、設定檔、前處理與推論指令。
+- [ ] 將未入選模型標記為封存，不再占用第二階段資源。
 
 ## 4. 文件與紀錄
 
-- [ ] 填寫 Stage 1 完整結果表。
-- [ ] 整理模型選擇理由與限制。
-- [ ] 製作一張 baseline 定量比較圖。
-- [ ] 更新論文 Stage 1 實驗設定與初步結果。
+- [x] 填寫第一階段完整結果表。
+- [x] 整理模型選擇理由與限制。
+- [x] 製作一張基準模型定量比較圖。
+- [ ] 更新論文第一階段實驗設定與初步結果。
 
 ## 週末驗收
 
-- [ ] 五個模型均有有效且可追溯的 validation 結果。
-- [ ] 勝出 baseline 有可重現的 checkpoint 與 inference 流程。
-- [ ] Stage 2 可直接沿用固定 protocol 啟動。
+- [x] 五個模型均有有效且可追溯的驗證結果。
+- [x] 勝出的基準模型有可重現的檢查點與推論流程。
+- [ ] 第二階段可直接沿用固定實驗規範啟動。
 
-**本週產物：** Stage 1 結果表、case-level CSV、比較圖、勝出模型 checkpoint 與選模紀錄。  
+**本週產物：** 第一階段結果表、個案層級 CSV、比較圖、勝出模型檢查點與選模紀錄。
 **阻塞／備註：**
 
+<!-- stage1-results:start -->
+## 自動產生結果（2026-11-01）
+
+| 排名 | 模型 | 非空 Dice（平均 ± SD） | 非空 Sensitivity（平均 ± SD） | 全案例 Dice | HD95 mm（有限值） | HD95 ∞ 數 |
+|---:|---|---:|---:|---:|---:|---:|
+| 1 | SegFormer MiT-B0 | 0.1713 ± 0.1839 | 0.4475 ± 0.2630 | 0.1159 | 201.11 | 43 |
+| 2 | MedNeXt-S | 0.0521 ± 0.1257 | 0.0803 ± 0.1781 | 0.0353 | 221.50 | 43 |
+| 3 | Swin-UNETR | 0.0480 ± 0.1056 | 0.1233 ± 0.2147 | 0.0325 | 225.48 | 43 |
+| 4 | UNETR | 0.0096 ± 0.0306 | 0.0436 ± 0.1010 | 0.0065 | 237.16 | 43 |
+| 5 | nnU-Net v2 | 0.0042 ± 0.0169 | 0.0022 ± 0.0090 | 0.1231 | 97.00 | 54 |
+
+勝出模型：**SegFormer MiT-B0**。完整個案 CSV、病灶大小分組、資源成本與極端案例見 `experiments/stage1/evaluation/20261031-stage1-validation-v1/stage1_results.md`；比較圖為 `experiments/stage1/evaluation/20261031-stage1-validation-v1/model_comparison.png`。
+
+品質備註：舊 UNETR 執行自第 44 epoch 出現 NaN，已加入 GradScaler、梯度裁切與非有限值檢查後以 v2 完整補跑；nnU-Net 初次執行的編譯器問題已用 `nnUNet_compile=false` 排除。
+全體積分數明顯低於訓練期間的正樣本 patch 指標，代表原 checkpoint 選擇偏樂觀；第二階段應改以全體積驗證選 checkpoint。
+<!-- stage1-results:end -->

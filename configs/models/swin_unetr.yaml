@@ -1,7 +1,25 @@
 model:
   name: swin_unetr
+  display_name: Swin-UNETR
+  family: hierarchical_transformer
+  backend: monai
   adapter: segagent.models.swin_unetr.adapter
   spatial_dims: 3
-  patch_size: null
-  batch_size: null
+  in_channels: 1
+  out_channels: 2
+  patch_size: [64, 64, 64]
+  batch_size: 1
   mixed_precision: true
+  initialization:
+    strategy: ssl_3d_ct_encoder
+    checkpoint: checkpoints/pretrained/swin_unetr/model_swinvit.pt
+  architecture:
+    feature_size: 48
+    depths: [2, 2, 2, 2]
+    num_heads: [3, 6, 12, 24]
+    use_checkpoint: true
+    use_v2: false
+  checkpointing:
+    root: checkpoints/stage1/swin_unetr
+    monitor: val/dice
+    mode: max

@@ -1,0 +1,26 @@
+schema_version: 1
+task:
+  name: lung_nodule_segmentation
+  in_channels: 1
+  out_channels: 2
+  labels:
+    0: background
+    1: nodule
+  prediction: softmax_argmax
+
+baselines:
+  - name: nnunet
+    config: configs/models/nnunet.yaml
+    enabled: true
+  - name: mednext
+    config: configs/models/mednext.yaml
+    enabled: true
+  - name: segformer
+    config: configs/models/segformer.yaml
+    enabled: true
+  - name: swin_unetr
+    config: configs/models/swin_unetr.yaml
+    enabled: true
+  - name: unetr
+    config: configs/models/unetr.yaml
+    enabled: true

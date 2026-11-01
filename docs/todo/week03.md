@@ -1,50 +1,50 @@
-# Week 03 TODO｜10/23～10/29
+# 第 03 週待辦｜10/23～10/29
 
-**階段：** Stage 2 第一輪 Attention 實驗  
-**週目標：** 完成 SE、CBAM、ECA 三種 attention 配置。  
-**輸入：** 鎖定的 Stage 1 baseline  
-**完成狀態：** ⬜ 未開始
+**階段：** 第二階段第一輪注意力實驗<br>
+**週目標：** 完成 SE、CBAM、ECA 三種注意力配置。<br>
+**輸入：** 鎖定的第一階段基準模型<br>
+**完成狀態：** 🟨 進行中
 
 ## 1. 架構適配
 
-- [ ] 確認 baseline 中可插入 attention 的候選位置。
+- [ ] 確認基準模型中可插入注意力模組的候選位置。
 - [ ] 定義 SE、CBAM、ECA 的插入位置與介面。
 - [ ] 記錄三種版本新增的參數量與計算路徑。
-- [ ] 確認除 attention 外沒有改動 training protocol。
-- [ ] 為三種版本各完成 forward／backward smoke test。
-- [ ] 驗證載入資料、輸出尺寸與 loss 計算正常。
+- [ ] 確認除注意力模組外，沒有改動訓練規範。
+- [ ] 為三種版本各完成前向／反向傳播冒煙測試。
+- [ ] 驗證資料載入、輸出尺寸與損失計算正常。
 
 ## 2. 正式實驗
 
-- [ ] 完成 baseline + SE 訓練。
-- [ ] 完成 baseline + SE validation inference 與 metrics。
-- [ ] 完成 baseline + CBAM 訓練。
-- [ ] 完成 baseline + CBAM validation inference 與 metrics。
-- [ ] 完成 baseline + ECA 訓練。
-- [ ] 完成 baseline + ECA validation inference 與 metrics。
-- [ ] 保存各版本最佳 checkpoint、config、log 與 prediction。
+- [ ] 完成基準模型加 SE 的訓練。
+- [ ] 完成基準模型加 SE 的驗證集推論與評估。
+- [ ] 完成基準模型加 CBAM 的訓練。
+- [ ] 完成基準模型加 CBAM 的驗證集推論與評估。
+- [ ] 完成基準模型加 ECA 的訓練。
+- [ ] 完成基準模型加 ECA 的驗證集推論與評估。
+- [ ] 保存各版本的最佳檢查點、設定檔、日誌與預測結果。
 
 ## 3. 初步比較
 
-- [ ] 計算三個版本相對 baseline 的各指標差值。
+- [ ] 計算三個版本相對基準模型的各指標差值。
 - [ ] 比較參數量、GPU 記憶體與推論時間增幅。
-- [ ] 確認提升不是由不同 checkpoint 選擇規則造成。
-- [ ] 抽查新增 attention 後改善與退步的案例。
+- [ ] 確認提升不是由不同的檢查點選擇規則造成。
+- [ ] 抽查新增注意力模組後改善與退步的案例。
 - [ ] 記錄三個版本的主要錯誤型態。
 
 ## 4. 文件與紀錄
 
-- [ ] 畫出 attention 插入位置示意。
-- [ ] 更新 Stage 2 結果表。
+- [ ] 畫出注意力模組插入位置示意。
+- [ ] 更新第二階段結果表。
 - [ ] 撰寫 SE、CBAM、ECA 的方法描述。
-- [ ] 安排 Week 04 的 CA、MHSA 與複驗 queue。
+- [ ] 安排第 04 週的 CA、MHSA 與複驗佇列。
 
 ## 週末驗收
 
-- [ ] 3/5 attention 版本皆有完整 validation 結果。
-- [ ] 所有版本只改動 attention mechanism。
+- [ ] 五種注意力版本中，已有三種具備完整驗證結果。
+- [ ] 所有版本都只改動注意力機制。
 - [ ] 結果與計算成本皆已進入統一表格。
 
-**本週產物：** 三組 checkpoint、三組 predictions、初步比較表、attention 插入位置圖。  
+**本週產物：** 三組檢查點、三組預測結果、初步比較表、注意力模組插入位置圖。
 **阻塞／備註：**
 

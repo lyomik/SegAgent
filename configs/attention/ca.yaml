@@ -1,0 +1,6 @@
+attention:
+  name: ca
+  enabled: true
+  insertion: encoder_stage_outputs_before_decode_head
+  reduction_ratio: 32
+  minimum_channels: 8

@@ -1,0 +1,5 @@
+attention:
+  name: eca
+  enabled: true
+  insertion: encoder_stage_outputs_before_decode_head
+  kernel_size: 3

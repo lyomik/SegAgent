@@ -1,0 +1,7 @@
+attention:
+  name: mhsa
+  enabled: true
+  insertion: encoder_stage_outputs_before_decode_head
+  num_heads: 4
+  max_kv_tokens: 256
+  dropout: 0.0

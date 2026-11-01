@@ -1,37 +1,39 @@
-# Stage 1：Baseline 模型篩選
+# 第一階段：基準模型篩選
 
 ## 實驗目的
 
-Stage 1 的目標是在統一的資料與訓練條件下，比較五種不同架構家族的醫學影像分割模型，選出整體表現最佳的模型，作為 Stage 2 的 baseline backbone。
+第一階段的目標是在統一的資料與訓練條件下，比較五種不同架構家族的醫學影像分割模型，選出整體表現最佳的模型，作為第二階段的基準骨幹。
 
 ## 資料集與任務定義
 
 - **資料集：** LIDC-IDRI
 - **影像模態：** 胸部 CT
 - **目標任務：** 肺結節分割
-- **資料切分：** 以病人為單位建立 training／validation／test split；同一病人的影像、結節與標註不得跨 split。
-- **標註處理：** LIDC-IDRI 的同一結節可能包含多位放射科醫師的輪廓標註。正式實驗前需固定標註整合規則，並對所有模型使用同一版本的 ground truth。
+- **資料切分：** 以病人為單位建立訓練／驗證／測試切分；同一病人的影像、結節與標註不得跨切分集合。
+- **標註處理：** LIDC-IDRI 的同一結節可能包含多位放射科醫師的輪廓標註。正式實驗前需固定標註整合規則，並對所有模型使用同一版本的真實標註。
 
-尚待 Week 01 固定的項目包括：結節納入／排除條件、多位標註的共識生成方式、CT intensity window、spacing、crop／patch 規則、2D／3D 輸入形式，以及 split 比例與 random seed。
+尚待第 01 週固定的項目包括：結節納入／排除條件、多位標註的共識生成方式、CT 強度窗、間距、裁切／分塊規則、2D／3D 輸入形式，以及切分比例與隨機種子。
 
 ## 候選模型
 
 | 模型 | 架構家族 | 架構特性 |
 | --- | --- | --- |
-| nnU-Net v2 | Self-configuring CNN | 可依資料集特性自動配置前處理、網路與訓練策略 |
+| nnU-Net v2 | 自我配置 CNN | 可依資料集特性自動配置前處理、網路與訓練策略 |
 | MedNeXt | CNN | 採用現代化卷積設計，強調多尺度特徵建模 |
-| SegFormer | Transformer | 使用階層式 Transformer encoder 與輕量化 decoder |
-| Swin-UNETR | Hierarchical Transformer | 結合 Swin Transformer encoder 與 U-shaped decoder |
-| PVFormer | Hybrid | 結合卷積的局部特徵與 Transformer 的全域資訊 |
+| SegFormer | Transformer | 使用階層式 Transformer 編碼器與輕量化解碼器 |
+| Swin-UNETR | 階層式 Transformer | 結合 Swin Transformer 編碼器與 U 形解碼器 |
+| UNETR | Transformer／CNN 混合架構 | 使用 ViT 編碼器建模 3D 全域關係，並透過 U 形卷積解碼器與跳接還原分割結果 |
+
+原候選 PVFormer 因缺乏可確認的醫學影像分割官方實作與相容權重，於 2026-10-13 改為 UNETR。UNETR 使用專案既有的 MONAI 依賴實作，並依原始論文設定從頭訓練，避免引入任務不相符的預訓練權重。
 
 ## 控制變因
 
 為確保比較公平，所有候選模型應盡可能採用一致的實驗設定：
 
-- 使用相同的 LIDC-IDRI training、validation 與 test split。
+- 使用相同的 LIDC-IDRI 訓練、驗證與測試切分。
 - 使用相同的影像前處理流程。
 - 使用相同的資料增強策略。
-- 使用相同的訓練 epoch 數與 early-stopping 規則。
+- 使用相同的訓練週期數與提前停止規則。
 - 使用相同的模型選擇、推論及後處理方式。
 - 使用相同的評估程式與指標計算方式。
 
@@ -41,7 +43,7 @@ Stage 1 的目標是在統一的資料與訓練條件下，比較五種不同架
 
 ### 主要指標
 
-- **Dice score**：衡量預測區域與標註區域的重疊程度。
+- **Dice 分數**：衡量預測區域與標註區域的重疊程度。
 - **Sensitivity**：衡量模型找出實際病灶的能力，降低漏診風險。
 
 ### 次要指標
@@ -52,25 +54,25 @@ Stage 1 的目標是在統一的資料與訓練條件下，比較五種不同架
 
 ## 模型選擇原則
 
-1. 以 validation set 的 Dice 與 Sensitivity 作為主要排名依據。
+1. 以驗證集的 Dice 與 Sensitivity 作為主要排名依據。
 2. 當主要指標表現接近時，依序參考 HD95、Precision 與 Specificity。
 3. 同時記錄模型參數量、推論時間與 GPU 記憶體用量，作為效能相近時的選擇依據。
-4. 僅使用 test set 對最終選定模型進行一次獨立評估，避免以 test set 反覆調整模型。
+4. 僅使用測試集對最終選定模型進行一次獨立評估，避免以測試集反覆調整模型。
 
 ## 預期產出
 
 - 五種候選模型在相同資料切分下的完整量化結果。
 - 各模型的優缺點與失敗案例分析。
-- 一個勝出的 baseline 模型，供 Stage 2 加入不同 attention module。
+- 一個勝出的基準模型，供第二階段加入不同注意力模組。
 
 ## 結果紀錄
 
 | 模型 | Dice ↑ | Sensitivity ↑ | HD95 ↓ | Precision ↑ | Specificity ↑ | 備註 |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| nnU-Net v2 | TBD | TBD | TBD | TBD | TBD | |
-| MedNeXt | TBD | TBD | TBD | TBD | TBD | |
-| SegFormer | TBD | TBD | TBD | TBD | TBD | |
-| Swin-UNETR | TBD | TBD | TBD | TBD | TBD | |
-| PVFormer | TBD | TBD | TBD | TBD | TBD | |
+| nnU-Net v2 | 待填 | 待填 | 待填 | 待填 | 待填 | |
+| MedNeXt | 待填 | 待填 | 待填 | 待填 | 待填 | |
+| SegFormer | 待填 | 待填 | 待填 | 待填 | 待填 | |
+| Swin-UNETR | 待填 | 待填 | 待填 | 待填 | 待填 | |
+| UNETR | 待填 | 待填 | 待填 | 待填 | 待填 | 從頭訓練，不使用預訓練權重 |
 
-**Stage 1 勝出模型：** TBD
+**第一階段勝出模型：** 待填
